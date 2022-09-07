@@ -2,7 +2,9 @@
 
 The objective of this service is to save the data in mysql as well as publish the messages to kafka topic in order to follow the cqrs pattern.
 
-Api
+Api's
+-----
+
 
 1. Save Product--> localhost:8081/e-auction/api/v1/seller/add-product   
 {
@@ -33,6 +35,6 @@ Api
     "bidAmount": "6000.0"
 }
 
-4. Get buyer details of particular bid -->
+4. Get buyer details of particular bid product --> localhost:8081/e-auction/api/v1/seller/show-bids/{productId}
 
    
