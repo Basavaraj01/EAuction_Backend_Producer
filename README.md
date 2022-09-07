@@ -18,7 +18,7 @@ Api's
     "bidEndDate": "2022-11-23"
 }
 
-2.  Get Product --> localhost:8081//-auction/api/v1/seller/products
+2.  Get Product --> localhost:8081/e-auction/api/v1/seller/products
 
 3. Place a bid -->  localhost:8081/e-auction/api/v1/buyer/place-bid
 
