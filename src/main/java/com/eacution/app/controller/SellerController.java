@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins="http://react-eauction.s3-website-us-east-1.amazonaws.com")
 public class SellerController {
 
     @Autowired

@@ -3,6 +3,8 @@ package com.eacution.app.controller;
 import com.eacution.app.NotFoundException;
 import com.eacution.app.entity.Buyer;
 import com.eacution.app.entity.Product;
+import com.eacution.app.kafka.JsonKafkaProducer;
+import com.eacution.app.kafka.JsonKafkaProducerBuy;
 import com.eacution.app.repository.BuyerRepository;
 import com.eacution.app.repository.ProductRepository;;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,13 +15,18 @@ import javax.validation.ValidationException;
 import java.util.*;
 
 @RestController
+@CrossOrigin(origins="http://react-eauction.s3-website-us-east-1.amazonaws.com")
 public class BuyerContoller {
+
 
     @Autowired
     private BuyerRepository buyerRepository;
 
     @Autowired
     private ProductRepository productRepository;
+
+    @Autowired
+    private JsonKafkaProducerBuy kafkaProducerBuy;
 
     @PostMapping("/buyer/place-bid")
         public ResponseEntity<String> createUser(@Valid @RequestBody Buyer buyer) {
@@ -38,6 +45,7 @@ public class BuyerContoller {
             throw new ValidationException("You cannot bid the product after the bid enddate");
         }
         buyerRepository.save(buyer);
+        kafkaProducerBuy.sendMessage(buyer);
         return ResponseEntity.ok("Data Saved Successfully");
     }
 

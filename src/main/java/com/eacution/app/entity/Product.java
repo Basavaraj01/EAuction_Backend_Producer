@@ -13,7 +13,6 @@ import java.util.*;
 public class Product {
 
     @Id
-    @GeneratedValue
     private int  productId;
     private Long sellerId;
     @Size(min = 5, max = 30, message

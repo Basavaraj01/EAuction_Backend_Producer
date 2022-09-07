@@ -3,6 +3,7 @@ package com.eacution.app.controller;
 import com.eacution.app.NotFoundException;
 import com.eacution.app.entity.Buyer;
 import com.eacution.app.entity.Product;
+import com.eacution.app.kafka.JsonKafkaProducer;
 import com.eacution.app.repository.BuyerRepository;
 import com.eacution.app.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin(origins="http://react-eauction.s3-website-us-east-1.amazonaws.com")
 public class ProductController {
 
     @Autowired
@@ -25,9 +27,13 @@ public class ProductController {
     @Autowired
     private BuyerRepository buyerRepository;
 
+    @Autowired
+    private JsonKafkaProducer kafkaProducer;
+
     @PostMapping("/seller/add-product")
     public ResponseEntity<String> retrieveSellerById(@Valid @RequestBody Product product) {
          productRepository.save(product);
+        kafkaProducer.sendMessage(product);
         return ResponseEntity.ok("Data Saved Successfully");
     }
 
@@ -38,18 +44,18 @@ public class ProductController {
     }
 
     @GetMapping("/seller/show-bids/{productId}")
-    public Optional<Product> retrieveProductsById(@PathVariable int productId) {
-        Optional<Product> product=productRepository.findById(productId);
-        if(product.isEmpty()){
+    public List<Buyer> retrieveProductsById(@PathVariable int productId) {
+        List<Buyer> buyers=buyerRepository.findByProductId(productId);
+        if(buyers.isEmpty()){
             throw new NotFoundException("productId "+productId+" is not found");
         }
-        return productRepository.findById(productId);
+        return buyers;
     }
 
     @DeleteMapping ("/seller/delete/{productId}")
     public String removeProductsById(@PathVariable int productId) throws ValidationException {
        Optional<Product> productList= productRepository.findById(productId);
-        if(productList.isEmpty()){
+        if(!productList.isPresent()){
             throw new NotFoundException("productId "+productId+" is not found");
         }
        Product p=productList.get();
