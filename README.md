@@ -1,4 +1,4 @@
-"# EAuction" 
+----- 
 
 The objective of this service is to save the data in mysql as well as publish the messages to kafka topic in order to follow the cqrs pattern.
 
